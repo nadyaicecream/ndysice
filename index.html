@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ncream — dunia ice cream yang fresh, creamy, dan bikin happy.">
+  <title>Ncream — Ice Cream World</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="64x64" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <a href="#home" class="logo"><span>N</span>cream<span class="dot">.</span></a>
+
+    <nav class="nav-links" id="navLinks">
+      <a href="#home" data-i18n="navHome">Home</a>
+      <a href="#about" data-i18n="navAbout">About</a>
+      <a href="#menu" data-i18n="navMenu">Menu</a>
+      <a href="#promo" data-i18n="navPromo">Promo</a>
+      <a href="#contact" data-i18n="navContact">Contact</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="icon-btn search-toggle" aria-label="Search">⌕</button>
+      <select id="language" class="language" aria-label="Language">
+        <option value="id">ID</option>
+        <option value="en">EN</option>
+      </select>
+      <button class="cart-btn" id="cartOpen" aria-label="Shopping cart">
+        🛒 <span id="cartCount">0</span>
+      </button>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
+    </div>
+  </header>
+
+  <div class="search-bar" id="searchBar">
+    <input id="searchInput" type="search" placeholder="Cari rasa favoritmu..." data-placeholder-id="Cari rasa favoritmu..." data-placeholder-en="Search your favorite flavor...">
+  </div>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-copy">
+        <p class="eyebrow" data-i18n="eyebrow">A LITTLE SCOOP OF HAPPINESS</p>
+        <h1 data-i18n="heroTitle">Your happy<br><em>ice cream</em> moment.</h1>
+        <p class="hero-text" data-i18n="heroText">Es krim creamy dengan rasa yang dibuat untuk menemani hari-hari manismu.</p>
+        <div class="hero-buttons">
+          <a href="#menu" class="btn btn-primary" data-i18n="explore">Explore Menu →</a>
+          <a href="#about" class="btn btn-ghost" data-i18n="story">Our Story</a>
+        </div>
+        <div class="hero-note">
+          <span>●</span> <span data-i18n="fresh">Freshly made, always creamy.</span>
+        </div>
+      </div>
+
+      <div class="hero-slider">
+        <div class="slider-track" id="sliderTrack">
+          <article class="slide active">
+            <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=1000&q=85" alt="Strawberry ice cream">
+            <div class="slide-label">01 / 05</div>
+          </article>
+          <article class="slide">
+            <img src="https://images.unsplash.com/photo-1570197788417-0e82375c9371?auto=format&fit=crop&w=1000&q=85" alt="Ice cream cone">
+            <div class="slide-label">02 / 05</div>
+          </article>
+          <article class="slide">
+            <img src="https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=1000&q=85" alt="Chocolate ice cream">
+            <div class="slide-label">03 / 05</div>
+          </article>
+          <article class="slide">
+            <img src="https://images.unsplash.com/photo-1501443762994-82bd5dace89a?auto=format&fit=crop&w=1000&q=85" alt="Ice cream sundae">
+            <div class="slide-label">04 / 05</div>
+          </article>
+          <article class="slide">
+            <img src="https://images.unsplash.com/photo-1557142046-c704a3adf364?auto=format&fit=crop&w=1000&q=85" alt="Mint ice cream">
+            <div class="slide-label">05 / 05</div>
+          </article>
+        </div>
+        <div class="slider-controls">
+          <button id="prevSlide">←</button>
+          <div class="dots" id="dots"></div>
+          <button id="nextSlide">→</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="ticker">
+      <span>CREAMY</span><b>✦</b><span>FRESH</span><b>✦</b><span>HAPPY</span><b>✦</b>
+      <span>CREAMY</span><b>✦</b><span>FRESH</span><b>✦</b><span>HAPPY</span>
+    </section>
+
+    <section class="section about" id="about">
+      <div class="section-heading">
+        <p class="eyebrow">NCR​EAM</p>
+        <h2 data-i18n="aboutTitle">More than ice cream,<br><em>it's a mood.</em></h2>
+      </div>
+      <div class="about-text">
+        <p data-i18n="aboutText">Ncream hadir untuk membuat momen sederhana terasa lebih spesial. Kami percaya satu scoop yang enak bisa mengubah mood dalam sekejap.</p>
+        <div class="stats">
+          <div><strong>5+</strong><span data-i18n="flavors">Signature flavors</span></div>
+          <div><strong>100%</strong><span data-i18n="happy">Happy moments</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section menu-section" id="menu">
+      <div class="section-top">
+        <div>
+          <p class="eyebrow" data-i18n="menuEyebrow">SCOOP YOUR FAVORITE</p>
+          <h2 data-i18n="menuTitle">Our <em>favorites</em></h2>
+        </div>
+        <div class="filter-pills">
+          <button class="pill active" data-filter="all">All</button>
+          <button class="pill" data-filter="classic">Classic</button>
+          <button class="pill" data-filter="special">Special</button>
+        </div>
+      </div>
+
+      <div class="product-grid" id="productGrid">
+        <article class="product-card" data-category="classic" data-name="Strawberry Bliss">
+          <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=700&q=85" alt="Strawberry Bliss">
+            <button class="quick-add" data-product="Strawberry Bliss" data-price="25000">+</button>
+          </div>
+          <div class="product-info"><h3>Strawberry Bliss</h3><p>Sweet strawberry</p><strong>Rp25.000</strong></div>
+        </article>
+
+        <article class="product-card" data-category="classic" data-name="Choco Dream">
+          <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=700&q=85" alt="Choco Dream">
+            <button class="quick-add" data-product="Choco Dream" data-price="27000">+</button>
+          </div>
+          <div class="product-info"><h3>Choco Dream</h3><p>Rich chocolate</p><strong>Rp27.000</strong></div>
+        </article>
+
+        <article class="product-card" data-category="special" data-name="Mint Cloud">
+          <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1557142046-c704a3adf364?auto=format&fit=crop&w=700&q=85" alt="Mint Cloud">
+            <button class="quick-add" data-product="Mint Cloud" data-price="28000">+</button>
+          </div>
+          <div class="product-info"><h3>Mint Cloud</h3><p>Cool & refreshing</p><strong>Rp28.000</strong></div>
+        </article>
+
+        <article class="product-card" data-category="special" data-name="Vanilla Berry">
+          <div class="product-image">
+            <img src="https://images.unsplash.com/photo-1501443762994-82bd5dace89a?auto=format&fit=crop&w=700&q=85" alt="Vanilla Berry">
+            <button class="quick-add" data-product="Vanilla Berry" data-price="30000">+</button>
+          </div>
+          <div class="product-info"><h3>Vanilla Berry</h3><p>Vanilla & berry</p><strong>Rp30.000</strong></div>
+        </article>
+      </div>
+      <p class="no-result" id="noResult">Produk tidak ditemukan.</p>
+    </section>
+
+    <section class="promo" id="promo">
+      <div>
+        <p class="eyebrow">SWEET DEAL</p>
+        <h2 data-i18n="promoTitle">Make it a<br><em>double scoop.</em></h2>
+        <p data-i18n="promoText">Tambah satu scoop favoritmu dan dapatkan harga spesial.</p>
+      </div>
+      <a href="#menu" class="btn btn-light" data-i18n="seeMenu">See Menu →</a>
+    </section>
+
+    <section class="section contact" id="contact">
+      <div>
+        <p class="eyebrow">NCR​EAM</p>
+        <h2 data-i18n="contactTitle">Let's make your<br><em>day sweeter.</em></h2>
+      </div>
+      <a class="contact-card" href="https://wa.me/6285691428657?text=Halo%20kak%20aku%20mau%20pesan%20roti%20....%205%20pack%20ya" target="_blank" rel="noopener">
+        <span>WhatsApp</span><strong>Chat with us ↗</strong>
+      </a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="logo"><span>N</span>cream<span class="dot">.</span></div>
+    <p>© 2026 Ncream. Made with 🍦 & love.</p>
+    <div><a href="#about">About</a><a href="#menu">Menu</a><a href="#contact">Contact</a></div>
+  </footer>
+
+  <div class="cart-overlay" id="cartOverlay"></div>
+  <aside class="cart-panel" id="cartPanel">
+    <div class="cart-header"><h2 data-i18n="cartTitle">Your Cart</h2><button id="cartClose">×</button></div>
+    <div id="cartItems" class="cart-items"><p class="empty-cart" data-i18n="emptyCart">Your cart is empty.</p></div>
+    <div class="cart-footer">
+      <div><span>Total</span><strong id="cartTotal">Rp0</strong></div>
+      <a id="checkoutBtn" class="btn btn-primary checkout" target="_blank" rel="noopener">Checkout via WhatsApp →</a>
+    </div>
+  </aside>
+
+  <a class="wa-float" href="https://wa.me/6285691428657?text=Halo%20kak%20aku%20mau%20pesan%20roti%20....%205%20pack%20ya" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
+    <span>☏</span>
+  </a>
+
+  <script src="script.js"></script>
+</body>
+</html>
