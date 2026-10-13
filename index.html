@@ -13,8 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <body data-shlock-mode="ultimate" data-shlock-domain="" data-shlock-brand="Ncream" data-shlock-social="https://dai.ly/xauys7m,https://www.tiktok.com/@ndiyea_,https://www.instagram.com/4notherndy/,https://www.instagram.com/ndst.log/">
+<body data-shlock-mode="ultimate" data-shlock-domain="" data-shlock-brand="Ncream" data-shlock-social="https://dai.ly/xauys7m,https://www.tiktok.com/@ndiyea_,https://www.instagram.com/4notherndy/,https://www.instagram.com/ndst.log/">
   <header class="navbar">
     <a href="#home" class="logo"><span>N</span>cream<span class="dot">.</span></a>
 
@@ -102,7 +101,7 @@
       <div class="about-text">
         <p data-i18n="aboutText">Ncream hadir untuk membuat momen sederhana terasa lebih spesial. Kami percaya satu scoop yang enak bisa mengubah mood dalam sekejap.</p>
         <div class="stats">
-          <div><strong>5+</strong><span data-i18n="flavors">Signature flavors</span></div>
+          <div><strong id="flavorCount">5+</strong><span data-i18n="flavors">Signature flavors</span></div>
           <div><strong>100%</strong><span data-i18n="happy">Happy moments</span></div>
         </div>
       </div>
@@ -114,47 +113,16 @@
           <p class="eyebrow" data-i18n="menuEyebrow">SCOOP YOUR FAVORITE</p>
           <h2 data-i18n="menuTitle">Our <em>favorites</em></h2>
         </div>
-        <div class="filter-pills">
+        <div class="filter-pills" id="filterPills">
           <button class="pill active" data-filter="all">All</button>
-          <button class="pill" data-filter="classic">Classic</button>
-          <button class="pill" data-filter="special">Special</button>
         </div>
       </div>
 
       <div class="product-grid" id="productGrid">
-        <article class="product-card" data-category="classic" data-name="Strawberry Bliss">
-          <div class="product-image">
-            <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=700&q=85" alt="Strawberry Bliss">
-            <button class="quick-add" data-product="Strawberry Bliss" data-price="25000">+</button>
-          </div>
-          <div class="product-info"><h3>Strawberry Bliss</h3><p>Sweet strawberry</p><strong>Rp25.000</strong></div>
-        </article>
-
-        <article class="product-card" data-category="classic" data-name="Choco Dream">
-          <div class="product-image">
-            <img src="https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=700&q=85" alt="Choco Dream">
-            <button class="quick-add" data-product="Choco Dream" data-price="27000">+</button>
-          </div>
-          <div class="product-info"><h3>Choco Dream</h3><p>Rich chocolate</p><strong>Rp27.000</strong></div>
-        </article>
-
-        <article class="product-card" data-category="special" data-name="Mint Cloud">
-          <div class="product-image">
-            <img src="https://images.unsplash.com/photo-1557142046-c704a3adf364?auto=format&fit=crop&w=700&q=85" alt="Mint Cloud">
-            <button class="quick-add" data-product="Mint Cloud" data-price="28000">+</button>
-          </div>
-          <div class="product-info"><h3>Mint Cloud</h3><p>Cool & refreshing</p><strong>Rp28.000</strong></div>
-        </article>
-
-        <article class="product-card" data-category="special" data-name="Vanilla Berry">
-          <div class="product-image">
-            <img src="https://images.unsplash.com/photo-1501443762994-82bd5dace89a?auto=format&fit=crop&w=700&q=85" alt="Vanilla Berry">
-            <button class="quick-add" data-product="Vanilla Berry" data-price="30000">+</button>
-          </div>
-          <div class="product-info"><h3>Vanilla Berry</h3><p>Vanilla & berry</p><strong>Rp30.000</strong></div>
-        </article>
+        <!-- Products loaded dynamically from Google Sheet -->
       </div>
-      <p class="no-result" id="noResult">Produk tidak ditemukan.</p>
+      <p class="no-result" id="noResult" style="display:none">Produk tidak ditemukan.</p>
+      <p class="loading-msg" id="loadingMsg">Memuat menu...</p>
     </section>
 
     <section class="promo" id="promo">
@@ -171,7 +139,7 @@
         <p class="eyebrow">NCR​EAM</p>
         <h2 data-i18n="contactTitle">Let's make your<br><em>day sweeter.</em></h2>
       </div>
-      <a class="contact-card" href="https://wa.me/6285691428657?text=Halo%20kak%20aku%20mau%20pesan%20roti%20....%205%20pack%20ya" target="_blank" rel="noopener">
+      <a class="contact-card" id="contactWA" href="https://wa.me/6285691428657" target="_blank" rel="noopener">
         <span>WhatsApp</span><strong>Chat with us ↗</strong>
       </a>
     </section>
@@ -189,15 +157,41 @@
     <div id="cartItems" class="cart-items"><p class="empty-cart" data-i18n="emptyCart">Your cart is empty.</p></div>
     <div class="cart-footer">
       <div><span>Total</span><strong id="cartTotal">Rp0</strong></div>
-      <a id="checkoutBtn" class="btn btn-primary checkout" target="_blank" rel="noopener">Checkout via WhatsApp →</a>
+      <button id="checkoutBtn" class="btn btn-primary checkout" type="button">Checkout via WhatsApp →</button>
     </div>
   </aside>
 
-  <a class="wa-float" href="https://wa.me/6285691428657?text=Halo%20kak%20aku%20mau%20pesan%20roti%20....%205%20pack%20ya" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
+  <!-- Checkout Modal -->
+  <div class="modal-overlay" id="checkoutModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Data Pesanan</h3>
+        <button id="modalClose" type="button">×</button>
+      </div>
+      <form id="checkoutForm">
+        <label>
+          Nama
+          <input type="text" id="customerName" required placeholder="Nama kamu" autocomplete="name">
+        </label>
+        <label>
+          Nomor WhatsApp
+          <input type="tel" id="customerWA" required placeholder="08xxxxxxxxxx" autocomplete="tel">
+        </label>
+        <label>
+          Catatan (opsional)
+          <textarea id="customerNotes" rows="2" placeholder="Contoh: kurang manis, antar jam 4 sore..."></textarea>
+        </label>
+        <div class="modal-summary" id="modalSummary"></div>
+        <button type="submit" class="btn btn-primary" id="submitOrderBtn">Kirim Pesanan →</button>
+        <p class="modal-hint">Pesanan akan tersimpan & dibuka di WhatsApp.</p>
+      </form>
+    </div>
+  </div>
+
+  <a class="wa-float" id="waFloat" href="https://wa.me/6285691428657" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
     <span>☏</span>
   </a>
 
   <script src="script.js"></script>
-    <script src="https://silverhawk.web.id/lock/lock.js"></script>
 </body>
 </html>
