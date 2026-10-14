@@ -15,7 +15,8 @@
 // ⬇️ GANTI dengan ID Spreadsheet kamu (dari URL sheet)
 // Contoh URL: https://docs.google.com/spreadsheets/d/1ABC...xyz/edit
 // ID-nya = 1ABC...xyz
-const SPREADSHEET_ID = 'd/1cyVb2J5QUj93vVaUR1PYaG0AW6Bz03lsBqFVkJp5sGc/edit?gid=0#gid=0';
+const SPREADSHEET_ID = 'https://script.google.com/macros/s/AKfycbwmqJcRXoodcBppqWNv1HR_fT_1ENgGgHAdjuWdohsoRP96-yA5zEafJwOtXZEYTs3P0w/exec
+';
 
 const SHEET_PRODUCTS = 'Products';
 const SHEET_ORDERS = 'Orders';
