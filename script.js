@@ -4,7 +4,8 @@
    ============================================================ */
 const CONFIG = {
   // ⬇️ PASTE URL Web App Apps Script di sini setelah deploy
-  APPS_SCRIPT_URL: 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE',
+  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbwmqJcRXoodcBppqWNv1HR_fT_1ENgGgHAdjuWdohsoRP96-yA5zEafJwOtXZEYTs3P0w/exec
+',
   // Nomor WhatsApp toko (tanpa +)
   WA_NUMBER: '6285691428657'
 };
