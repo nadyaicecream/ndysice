@@ -251,8 +251,14 @@ function renderProducts(products) {
       : (Number(p.stock) <= 5 ? `<span class="stock-badge stock-low">Sisa ${p.stock}</span>` : '');
     return `
     <article class="product-card" data-category="${(p.category || 'classic').toLowerCase()}" data-name="${p.name}">
-      <div class="product-image">
-        <img src="${p.image || 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=700&q=85'}" alt="${p.name}" loading="lazy">
+      <div class="product-image">      
+<img
+  src="${p.image || 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=700&q=85'}"
+  alt="${p.name}"
+  loading="lazy"
+  onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=700&q=85';"
+>
+
         ${outOfStock
           ? stockLabel
           : `<button class="quick-add" data-id="${p.id}" data-product="${p.name}" data-price="${p.price}">+</button>${stockLabel}`}
