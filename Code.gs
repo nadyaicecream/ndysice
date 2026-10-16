@@ -1,133 +1,26 @@
 /**
- * Ncream — Google Apps Script (Database API)
- * 
- * Cara pakai:
- * 1. Buka spreadsheet Google Sheet kamu
- * 2. Extensions → Apps Script
- * 3. Hapus kode default, paste seluruh isi file ini
- * 4. Ganti SPREADSHEET_ID di bawah dengan ID Sheet kamu
- * 5. Deploy → New deployment → Web app
+ * ============================================================
+ * Ncream Backend — Google Apps Script
+ * ============================================================
+ * SETUP:
+ * 1. Buat Google Sheet baru dengan 2 sheet: Products & Orders
+ * 2. Di Apps Script → Project Settings → Script properties
+ *    tambahkan: SPREADSHEET_ID = (ID dari URL sheet)
+ * 3. Deploy → New deployment → Web app
  *    - Execute as: Me
  *    - Who has access: Anyone
- * 6. Copy URL Web App, paste ke script.js di website (CONFIG.APPS_SCRIPT_URL)
+ * 4. Salin URL, tempel di script.js (CONFIG.APPS_SCRIPT_URL)
+ * ============================================================
  */
 
-// ⬇️ GANTI dengan ID Spreadsheet kamu (dari URL sheet)
-// Contoh URL: https://docs.google.com/spreadsheets/d/1ABC...xyz/edit
-// ID-nya = 1ABC...xyz
-const SPREADSHEET_ID = 'https://script.google.com/macros/s/AKfycbwmqJcRXoodcBppqWNv1HR_fT_1ENgGgHAdjuWdohsoRP96-yA5zEafJwOtXZEYTs3P0w/exec
-';
-
-const SHEET_PRODUCTS = 'Products';
-const SHEET_ORDERS = 'Orders';
-
-function doGet(e) {
-  const action = (e.parameter && e.parameter.action) || 'products';
-  try {
-    if (action === 'products') {
-      return jsonResponse({ ok: true, products: getProducts() });
-    }
-    return jsonResponse({ ok: false, error: 'Unknown action' });
-  } catch (err) {
-    return jsonResponse({ ok: false, error: String(err) });
-  }
+function getProp(key) {
+  return PropertiesService.getScriptProperties().getProperty(key);
 }
 
-function doPost(e) {
-  try {
-    const body = JSON.parse(e.postData.contents);
-    if (body.action === 'order') {
-      const result = saveOrder(body);
-      return jsonResponse(result);
-    }
-    return jsonResponse({ ok: false, error: 'Unknown action' });
-  } catch (err) {
-    return jsonResponse({ ok: false, error: String(err) });
-  }
-}
-
-function getProducts() {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = ss.getSheetByName(SHEET_PRODUCTS);
-  if (!sheet) throw new Error('Sheet "Products" tidak ditemukan');
-
-  const data = sheet.getDataRange().getValues();
-  if (data.length < 2) return [];
-
-  const headers = data[0].map(h => String(h).trim().toLowerCase());
-  const rows = data.slice(1);
-
-  return rows.map((row, idx) => {
-    const obj = {};
-    headers.forEach((h, i) => {
-      obj[h] = row[i];
-    });
-    return {
-      id: String(obj.id || idx + 1),
-      name: String(obj.name || ''),
-      description: String(obj.description || obj.desc || ''),
-      price: Number(obj.price) || 0,
-      category: String(obj.category || 'classic').toLowerCase(),
-      image: String(obj.image || obj.img || ''),
-      stock: Number(obj.stock) >= 0 ? Number(obj.stock) : 99,
-      active: obj.active === true || obj.active === 'TRUE' || obj.active === 'true' || obj.active === 1 || obj.active === ''
-    };
-  }).filter(p => p.name);
-}
-
-function saveOrder(body) {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  let sheet = ss.getSheetByName(SHEET_ORDERS);
-  if (!sheet) {
-    sheet = ss.insertSheet(SHEET_ORDERS);
-    sheet.appendRow(['id', 'timestamp', 'customer_name', 'customer_wa', 'items', 'total', 'notes', 'status']);
-  }
-
-  const id = Utilities.getUuid().slice(0, 8);
-  const timestamp = Utilities.formatDate(new Date(), 'Asia/Jakarta', 'yyyy-MM-dd HH:mm:ss');
-  const itemsText = body.items_text || (body.items || []).map(i => i.name + ' x' + i.qty).join(', ');
-  const total = Number(body.total) || 0;
-  const notes = body.notes || '';
-  const name = body.customer_name || '';
-  const wa = body.customer_wa || '';
-
-  sheet.appendRow([id, timestamp, name, wa, itemsText, total, notes, 'Baru']);
-
-  // Kurangi stok (opsional, jika kolom stock ada)
-  try {
-    decreaseStock(ss, body.items || []);
-  } catch (err) {
-    // tidak gagalkan order jika stok gagal
-    console.warn('Stock update failed:', err);
-  }
-
-  return { ok: true, order_id: id, message: 'Order saved' };
-}
-
-function decreaseStock(ss, items) {
-  if (!items || !items.length) return;
-  const sheet = ss.getSheetByName(SHEET_PRODUCTS);
-  if (!sheet) return;
-
-  const data = sheet.getDataRange().getValues();
-  const headers = data[0].map(h => String(h).trim().toLowerCase());
-  const idCol = headers.indexOf('id');
-  const nameCol = headers.indexOf('name');
-  const stockCol = headers.indexOf('stock');
-  if (stockCol < 0) return;
-
-  items.forEach(item => {
-    for (let r = 1; r < data.length; r++) {
-      const matchId = idCol >= 0 && String(data[r][idCol]) === String(item.id);
-      const matchName = nameCol >= 0 && String(data[r][nameCol]) === String(item.name);
-      if (matchId || matchName) {
-        const current = Number(data[r][stockCol]) || 0;
-        const newStock = Math.max(0, current - Number(item.qty || 1));
-        sheet.getRange(r + 1, stockCol + 1).setValue(newStock);
-        break;
-      }
-    }
-  });
+function getSpreadsheet() {
+  const id = getProp('SPREADSHEET_ID');
+  if (!id) throw new Error('SPREADSHEET_ID belum diset di Script Properties');
+  return SpreadsheetApp.openById(id);
 }
 
 function jsonResponse(obj) {
@@ -136,26 +29,184 @@ function jsonResponse(obj) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-/**
- * Jalankan sekali dari editor Apps Script untuk setup header Sheets
- * (opsional — kalau kamu sudah buat header manual, skip saja)
- */
-function setupSheets() {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+function generateOrderId() {
+  const now = new Date();
+  const date = Utilities.formatDate(now, 'Asia/Jakarta', 'yyyyMMdd');
+  const rand = Math.floor(Math.random() * 900) + 100;
+  return 'NCR-' + date + '-' + rand;
+}
 
-  let products = ss.getSheetByName(SHEET_PRODUCTS);
-  if (!products) products = ss.insertSheet(SHEET_PRODUCTS);
-  products.clear();
-  products.appendRow(['id', 'name', 'description', 'price', 'category', 'image', 'stock', 'active']);
-  products.appendRow(['1', 'Strawberry Bliss', 'Sweet strawberry', 25000, 'classic', 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=700&q=85', 50, 'TRUE']);
-  products.appendRow(['2', 'Choco Dream', 'Rich chocolate', 27000, 'classic', 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=700&q=85', 50, 'TRUE']);
-  products.appendRow(['3', 'Mint Cloud', 'Cool & refreshing', 28000, 'special', 'https://images.unsplash.com/photo-1557142046-c704a3adf364?auto=format&fit=crop&w=700&q=85', 40, 'TRUE']);
-  products.appendRow(['4', 'Vanilla Berry', 'Vanilla & berry', 30000, 'special', 'https://images.unsplash.com/photo-1501443762994-82bd5dace89a?auto=format&fit=crop&w=700&q=85', 40, 'TRUE']);
+/* ========== GET products ========== */
+function getProducts() {
+  const cache = CacheService.getScriptCache();
+  const cached = cache.get('products');
+  if (cached) {
+    return jsonResponse(JSON.parse(cached));
+  }
 
-  let orders = ss.getSheetByName(SHEET_ORDERS);
-  if (!orders) orders = ss.insertSheet(SHEET_ORDERS);
-  orders.clear();
-  orders.appendRow(['id', 'timestamp', 'customer_name', 'customer_wa', 'items', 'total', 'notes', 'status']);
+  const ss = getSpreadsheet();
+  const sheet = ss.getSheetByName('Products');
+  if (!sheet) return jsonResponse({ ok: false, error: 'Sheet Products tidak ditemukan' });
 
-  Logger.log('Setup selesai! Sheet Products & Orders sudah siap.');
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0].map(h => String(h).toLowerCase().trim());
+  const products = [];
+
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    const obj = {};
+    headers.forEach(function(h, idx) {
+      obj[h] = row[idx];
+    });
+
+    obj.id = String(obj.id || '');
+    obj.name = String(obj.name || '');
+    obj.description = String(obj.description || '');
+    obj.price = Number(obj.price) || 0;
+    obj.category = String(obj.category || 'classic');
+    obj.image = String(obj.image || '');
+    obj.stock = Number(obj.stock) || 0;
+    obj.active = obj.active === true || obj.active === 'TRUE' || obj.active === 'true' || obj.active === 1;
+    obj.sort = Number(obj.sort) || 999;
+
+    if (obj.active && obj.name) products.push(obj);
+  }
+
+  products.sort(function(a, b) { return a.sort - b.sort; });
+
+  const result = { ok: true, products: products, version: new Date().getTime() };
+  cache.put('products', JSON.stringify(result), 300); // 5 menit
+  return jsonResponse(result);
+}
+
+/* ========== POST order ========== */
+function createOrder(payload) {
+  const lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(10000);
+
+    const ss = getSpreadsheet();
+    const orderSheet = ss.getSheetByName('Orders');
+    const productSheet = ss.getSheetByName('Products');
+
+    if (!orderSheet || !productSheet) {
+      return jsonResponse({ ok: false, error: 'Sheet Orders/Products tidak ditemukan' });
+    }
+
+    // Map produk: id → {row, stock}
+    const productData = productSheet.getDataRange().getValues();
+    const headers = productData[0].map(h => String(h).toLowerCase().trim());
+    const idCol = headers.indexOf('id');
+    const stockCol = headers.indexOf('stock');
+    if (idCol < 0 || stockCol < 0) {
+      return jsonResponse({ ok: false, error: 'Kolom id/stock tidak ditemukan di Products' });
+    }
+
+    const productMap = {};
+    for (let i = 1; i < productData.length; i++) {
+      const pid = String(productData[i][idCol]);
+      productMap[pid] = {
+        row: i + 1,
+        stock: Number(productData[i][stockCol]) || 0
+      };
+    }
+
+    const items = payload.items || [];
+    for (let j = 0; j < items.length; j++) {
+      const item = items[j];
+      const p = productMap[String(item.id)];
+      if (!p || p.stock < Number(item.qty)) {
+        return jsonResponse({
+          ok: false,
+          error: 'Stok ' + (item.name || item.id) + ' tidak cukup'
+        });
+      }
+    }
+
+    // Kurangi stok
+    for (let k = 0; k < items.length; k++) {
+      const item = items[k];
+      const p = productMap[String(item.id)];
+      const newStock = p.stock - Number(item.qty);
+      productSheet.getRange(p.row, stockCol + 1).setValue(newStock);
+    }
+
+    // Clear cache
+    CacheService.getScriptCache().remove('products');
+
+    // Simpan order
+    const orderId = generateOrderId();
+    const timestamp = Utilities.formatDate(new Date(), 'Asia/Jakarta', 'yyyy-MM-dd HH:mm:ss');
+
+    orderSheet.appendRow([
+      orderId,
+      timestamp,
+      payload.customer_name || '',
+      payload.customer_wa || '',
+      JSON.stringify(items),
+      payload.items_text || '',
+      Number(payload.total) || 0,
+      payload.notes || '',
+      'Baru'
+    ]);
+
+    return jsonResponse({
+      ok: true,
+      orderId: orderId,
+      message: 'Pesanan berhasil disimpan'
+    });
+
+  } catch (e) {
+    return jsonResponse({ ok: false, error: e.message });
+  } finally {
+    try { lock.releaseLock(); } catch (e2) {}
+  }
+}
+
+/* ========== GET order status ========== */
+function getOrderStatus(orderId) {
+  if (!orderId) return jsonResponse({ ok: false, error: 'orderId required' });
+
+  const ss = getSpreadsheet();
+  const sheet = ss.getSheetByName('Orders');
+  if (!sheet) return jsonResponse({ ok: false, error: 'Sheet Orders tidak ditemukan' });
+
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]) === String(orderId)) {
+      return jsonResponse({
+        ok: true,
+        orderId: data[i][0],
+        timestamp: data[i][1],
+        customer_name: data[i][2],
+        total: data[i][6],
+        status: data[i][8],
+        items_text: data[i][5]
+      });
+    }
+  }
+  return jsonResponse({ ok: false, error: 'Order tidak ditemukan' });
+}
+
+/* ========== ENTRY POINTS ========== */
+function doGet(e) {
+  const action = ((e.parameter && e.parameter.action) || '').toLowerCase();
+  try {
+    if (action === 'products') return getProducts();
+    if (action === 'orderstatus') return getOrderStatus(e.parameter.id);
+    return jsonResponse({ ok: false, error: 'Unknown action. Use ?action=products or ?action=orderstatus&id=...' });
+  } catch (err) {
+    return jsonResponse({ ok: false, error: err.message });
+  }
+}
+
+function doPost(e) {
+  try {
+    const payload = JSON.parse(e.postData.contents);
+    const action = (payload.action || '').toLowerCase();
+    if (action === 'order') return createOrder(payload);
+    return jsonResponse({ ok: false, error: 'Unknown action' });
+  } catch (err) {
+    return jsonResponse({ ok: false, error: err.message });
+  }
 }
