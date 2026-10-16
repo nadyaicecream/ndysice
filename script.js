@@ -6,7 +6,7 @@
    ============================================================ */
 const CONFIG = {
   // ⬇️ Ganti dengan URL Web App setelah deploy Apps Script
-  APPS_SCRIPT_URL: '/https://script.google.com/macros/s/AKfycbzsVsCrgtxxzZfaZ2l8X9_VrFQitZ91vL-Jc9RthbTP9EaBzEPsozHlMkviv7VyVYDQ/exec',
+  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzsVsCrgtxxzZfaZ2l8X9_VrFQitZ91vL-Jc9RthbTP9EaBzEPsozHlMkviv7VyVYDQ/exec',
   // Nomor WhatsApp toko (tanpa +)
   WA_NUMBER: '6285691428657',
   // Cache lokal (ms)
