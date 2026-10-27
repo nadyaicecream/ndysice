@@ -1,0 +1,31 @@
+{
+  "name": "Ncream — Ice Cream World",
+  "short_name": "Ncream",
+  "description": "Dunia ice cream yang fresh, creamy, dan bikin happy. Es krim premium di ndys.web.id",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff0f5",
+  "theme_color": "#ff6b9d",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "lang": "id",
+  "categories": ["food", "shopping"]
+}

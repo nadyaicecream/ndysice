@@ -1,0 +1,9 @@
+# robots.txt for https://ndys.web.id/
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://ndys.web.id/sitemap.xml
+
+# Disallow admin or private if any (none currently)
+# Disallow: /private/
